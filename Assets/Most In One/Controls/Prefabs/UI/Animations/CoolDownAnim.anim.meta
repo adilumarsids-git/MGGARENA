@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3f0e0f49675f74035b9f43a08220f9eb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/UI/Animations/CoolDownAnim.anim
+  uploadId: 852058

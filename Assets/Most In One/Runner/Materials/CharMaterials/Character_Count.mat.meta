@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 272f2c8752a164b0687cb98bab3d04d0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Materials/CharMaterials/Character_Count.mat
+  uploadId: 852058

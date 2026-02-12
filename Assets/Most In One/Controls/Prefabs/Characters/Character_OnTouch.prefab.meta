@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 18f96106b55c84588b445a92025cdf65
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Characters/Character_OnTouch.prefab
+  uploadId: 852058

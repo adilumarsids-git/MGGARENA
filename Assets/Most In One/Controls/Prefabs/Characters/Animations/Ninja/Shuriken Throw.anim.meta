@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f8040a76bcbef4a62acb2c34fc22c3c2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Characters/Animations/Ninja/Shuriken
+    Throw.anim
+  uploadId: 852058

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5a7fb6083f0184a3ba3f187f5cb60e40
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/EndGameUIHandler.cs
+  uploadId: 852058

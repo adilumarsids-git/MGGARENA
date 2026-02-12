@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e7bcb7ea16e6044d7852b10f82274ce0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/Editor/RunnerLevelGenerator.cs
+  uploadId: 852058

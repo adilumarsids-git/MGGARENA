@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6feb008fdfb874ff19ff66e56cf6c9ff
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Bullets/Bullet_Enemy.prefab
+  uploadId: 852058

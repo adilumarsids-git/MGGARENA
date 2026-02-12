@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 11420254c29bb4c7d940c2617101abc4
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Gradient/Shaders/HowTo_URP.txt
+  uploadId: 852058

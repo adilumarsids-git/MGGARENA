@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bfb9db7635ef247429e0727dcd05b37f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Bullets/Bullet_Trail.prefab
+  uploadId: 852058

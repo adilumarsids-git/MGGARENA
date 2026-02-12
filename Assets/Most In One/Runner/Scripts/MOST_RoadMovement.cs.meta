@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 906cb9b1065ff447b838f44af9443a20
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/MOST_RoadMovement.cs
+  uploadId: 852058

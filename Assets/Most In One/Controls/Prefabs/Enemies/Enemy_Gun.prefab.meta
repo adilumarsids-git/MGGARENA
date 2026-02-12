@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 231578c517e3c422e877857ddf960320
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Enemies/Enemy_Gun.prefab
+  uploadId: 852058

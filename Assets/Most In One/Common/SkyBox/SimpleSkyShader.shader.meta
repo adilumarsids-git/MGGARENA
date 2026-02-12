@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 688923ecebca04969ac2acbcaf4e2cbc
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Common/SkyBox/SimpleSkyShader.shader
+  uploadId: 852058

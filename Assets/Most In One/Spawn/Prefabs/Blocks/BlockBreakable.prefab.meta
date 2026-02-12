@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a5a4973f6cb034e599f3af84d0596f0b
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Spawn/Prefabs/Blocks/BlockBreakable.prefab
+  uploadId: 852058

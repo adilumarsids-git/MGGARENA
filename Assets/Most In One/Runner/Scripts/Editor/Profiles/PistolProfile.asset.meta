@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3a6a4f8ac79254086b924d59619fe36f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/Editor/Profiles/PistolProfile.asset
+  uploadId: 852058

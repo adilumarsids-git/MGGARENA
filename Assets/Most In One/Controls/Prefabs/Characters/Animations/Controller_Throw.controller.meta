@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 90bf3418c088949f28c73337511ca4e6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Characters/Animations/Controller_Throw.controller
+  uploadId: 852058

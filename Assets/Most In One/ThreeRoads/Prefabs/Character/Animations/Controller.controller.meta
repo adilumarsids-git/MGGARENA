@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4da02d375cedf479aaa4cc650124937e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/ThreeRoads/Prefabs/Character/Animations/Controller.controller
+  uploadId: 852058

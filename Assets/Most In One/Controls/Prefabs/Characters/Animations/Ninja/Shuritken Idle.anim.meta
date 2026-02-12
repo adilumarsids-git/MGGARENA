@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 445647739d1324217a652fddead6a5b2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Characters/Animations/Ninja/Shuritken
+    Idle.anim
+  uploadId: 852058

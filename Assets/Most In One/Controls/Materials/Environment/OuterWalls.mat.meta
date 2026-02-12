@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a95d6d423585145fba1da3209ea290db
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Materials/Environment/OuterWalls.mat
+  uploadId: 852058

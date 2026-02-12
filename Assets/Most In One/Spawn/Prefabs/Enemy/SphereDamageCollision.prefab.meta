@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2ba6f598e0f054e70b0c53dae1bc65e9
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Spawn/Prefabs/Enemy/SphereDamageCollision.prefab
+  uploadId: 852058

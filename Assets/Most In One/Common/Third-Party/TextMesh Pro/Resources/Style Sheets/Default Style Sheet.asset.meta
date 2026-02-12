@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f952c082cb03451daed3ee968ac6c63e
+timeCreated: 1432805430
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Common/Third-Party/TextMesh Pro/Resources/Style Sheets/Default
+    Style Sheet.asset
+  uploadId: 852058

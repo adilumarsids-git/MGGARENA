@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5761576d2d8b55549bb01953b3d2a60c
+timeCreated: 1488405478
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Materials/FX Materials/default_additive.mat
+  uploadId: 852058

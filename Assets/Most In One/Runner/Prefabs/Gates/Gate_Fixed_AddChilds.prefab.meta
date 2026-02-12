@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c350acca29b6448c58985ac6d342e7a3
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Gates/Gate_Fixed_AddChilds.prefab
+  uploadId: 852058

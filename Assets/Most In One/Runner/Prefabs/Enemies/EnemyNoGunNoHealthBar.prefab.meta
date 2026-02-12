@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: acf987b7df9774bc79ed338962d6f6b8
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Enemies/EnemyNoGunNoHealthBar.prefab
+  uploadId: 852058

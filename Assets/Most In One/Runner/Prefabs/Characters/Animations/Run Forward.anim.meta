@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 11383f92774f248a6a4155e84ab3b5b0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Characters/Animations/Run Forward.anim
+  uploadId: 852058

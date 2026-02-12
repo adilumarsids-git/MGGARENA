@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 72f664f9d85304510bb5bd7cabee5df4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Enemies/Zombie.prefab
+  uploadId: 852058

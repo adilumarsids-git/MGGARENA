@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2f354a63dbab9934e88f4e71061ebb9a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/CharacterControl_Count_Child.cs
+  uploadId: 852058

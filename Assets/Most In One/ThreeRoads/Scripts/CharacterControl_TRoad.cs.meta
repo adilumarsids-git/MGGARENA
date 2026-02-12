@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a4da71da7d217442ea669690a64077a1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/ThreeRoads/Scripts/CharacterControl_TRoad.cs
+  uploadId: 852058

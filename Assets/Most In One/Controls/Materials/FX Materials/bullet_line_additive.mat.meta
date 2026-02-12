@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: be8a68a4ceb83f947b32e8cd8e36d668
+timeCreated: 1478435619
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Materials/FX Materials/bullet_line_additive.mat
+  uploadId: 852058

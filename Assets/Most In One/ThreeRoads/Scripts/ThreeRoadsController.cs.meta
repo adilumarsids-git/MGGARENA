@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d6707e10389d64896853c5fca3651ac6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/ThreeRoads/Scripts/ThreeRoadsController.cs
+  uploadId: 852058

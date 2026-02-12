@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 77bf4647e36d9ca42b762b0a665e9ce8
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Strong/Scripts/DynamicWallControl.cs
+  uploadId: 852058

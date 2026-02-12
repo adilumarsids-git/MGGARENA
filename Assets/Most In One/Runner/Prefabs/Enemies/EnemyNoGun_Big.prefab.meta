@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9b7fdf39c2f6d4612a98ca0404b2e7bc
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Enemies/EnemyNoGun_Big.prefab
+  uploadId: 852058

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b2c6559c5f70042628f9cf7a9550ebfb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 13400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/FootBall/Phy Material Main.physicMaterial
+  uploadId: 852058

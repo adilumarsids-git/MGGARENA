@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e6264cb03a1ae4500870265d3fe541c6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Enemies/Animations/Controller_Zombie.controller
+  uploadId: 852058

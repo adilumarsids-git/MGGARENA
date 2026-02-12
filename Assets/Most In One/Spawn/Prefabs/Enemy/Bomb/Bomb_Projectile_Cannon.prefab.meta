@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: da448e4c477f84572bbb329db91b5342
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Spawn/Prefabs/Enemy/Bomb/Bomb_Projectile_Cannon.prefab
+  uploadId: 852058

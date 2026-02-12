@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: baac3bec4a9d54310b3399e4c632f6a5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Scripts/Editor/Profiles/BigBrainProfile.asset
+  uploadId: 852058

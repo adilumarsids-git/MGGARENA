@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 65b9f6df977bf4207bedca64edb96519
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Gradient/Shaders/Most_GradientShader_URP.shader.bytes
+  uploadId: 852058

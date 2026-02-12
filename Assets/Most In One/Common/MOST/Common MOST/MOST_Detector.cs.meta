@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b8b594db37d6a47a3bafba8575fa7ea5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Common/MOST/Common MOST/MOST_Detector.cs
+  uploadId: 852058

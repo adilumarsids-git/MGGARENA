@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 986be83859e0e4559b34dd7133befa62
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Controls/Prefabs/Characters/Animations/Controller_Shoot_4.controller
+  uploadId: 852058

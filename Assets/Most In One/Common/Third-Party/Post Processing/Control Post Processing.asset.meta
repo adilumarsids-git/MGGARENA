@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6da942719a9dc41369ad5dbfb31781a5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Common/Third-Party/Post Processing/Control Post Processing.asset
+  uploadId: 852058

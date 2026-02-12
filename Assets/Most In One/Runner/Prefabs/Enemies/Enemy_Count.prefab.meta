@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ecfa4ed66b84fab43833321a4890d8c3
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Enemies/Enemy_Count.prefab
+  uploadId: 852058

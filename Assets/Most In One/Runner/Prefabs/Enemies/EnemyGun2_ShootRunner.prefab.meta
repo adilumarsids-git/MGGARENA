@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 69e24ef9d5057430eb222e7ebc4c21cd
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Runner/Prefabs/Enemies/EnemyGun2_ShootRunner.prefab
+  uploadId: 852058

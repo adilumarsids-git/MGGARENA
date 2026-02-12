@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: abf80d60d5e0e4ce0a91bb50eb69b8c4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 295013
+  packageName: MOST IN ONE
+  packageVersion: 3.1.2
+  assetPath: Assets/Most In One/Cubey/Scripts/LevelSettings_Cubey.cs
+  uploadId: 852058
