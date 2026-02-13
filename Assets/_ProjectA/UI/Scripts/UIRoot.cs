@@ -8,14 +8,25 @@ namespace ProjectA.UI
 
         private void Awake()
         {
-            if (_instance != null && _instance != this)
+            if (_instance == null || !_instance)
             {
-                Destroy(gameObject);
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
                 return;
             }
 
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (_instance != this)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
         }
     }
 }

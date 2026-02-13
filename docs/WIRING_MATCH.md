@@ -65,6 +65,10 @@ In `Assets/_ProjectA/UI/Prefabs/UIRoot.prefab` (or scene instance), verify:
 - Keep `NetworkSpawnPoints` object present.
 - For Teams mode, tune Team A / Team B spawn sets in `NetworkSpawnPoints`.
 
+Important:
+- Do **not** make `NetworkGameManager` a child of `UIRoot` in scene hierarchy.
+- `FusionBootstrap` spawns it automatically when a match starts.
+
 ---
 
 ## ResultsPanel data integration

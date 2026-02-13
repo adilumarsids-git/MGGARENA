@@ -34,15 +34,27 @@ namespace ProjectA.Networking
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (Instance == null || !Instance)
             {
-                Destroy(gameObject);
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                RemoveChildGameManagersIfAny();
+                EnsureDependencies();
                 return;
             }
 
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            EnsureDependencies();
+            if (Instance != this)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         public static void StartSelectedModeFromUI()
@@ -129,6 +141,21 @@ namespace ProjectA.Networking
             }
 
             return -1;
+        }
+
+        private void RemoveChildGameManagersIfAny()
+        {
+            var childManagers = GetComponentsInChildren<NetworkGameManager>(true);
+            foreach (var manager in childManagers)
+            {
+                if (manager == null || manager.transform == transform)
+                {
+                    continue;
+                }
+
+                Debug.LogWarning("[FusionBootstrap] Remove child NetworkGameManager from UIRoot. It is spawned automatically at runtime.");
+                Destroy(manager.gameObject);
+            }
         }
 
         private void EnsureDependencies()
