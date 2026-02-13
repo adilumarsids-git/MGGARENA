@@ -30,6 +30,20 @@ namespace ProjectA.Networking
 
         public override void Spawned()
         {
+            if (Instance != null && Instance != this)
+            {
+                if (Object != null && Object.HasStateAuthority && Runner != null)
+                {
+                    Runner.Despawn(Object);
+                }
+                else
+                {
+                    gameObject.SetActive(false);
+                }
+
+                return;
+            }
+
             Instance = this;
 
             if (Object != null && Object.HasStateAuthority)

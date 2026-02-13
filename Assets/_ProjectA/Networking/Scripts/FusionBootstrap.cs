@@ -29,6 +29,7 @@ namespace ProjectA.Networking
         [SerializeField] private int maxPlayers = 8;
 
         private readonly Dictionary<PlayerRef, NetworkObject> _spawned = new();
+        private bool _managerSpawnRequested;
 
         public NetworkRunner Runner => runner;
 
@@ -186,12 +187,7 @@ namespace ProjectA.Networking
 
         public void OnPlayerJoined(NetworkRunner runnerInstance, PlayerRef player)
         {
-            if (networkGameManagerPrefab != null && runnerInstance.IsSharedModeMasterClient && NetworkGameManager.Instance == null)
-            {
-                var managerObject = runnerInstance.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity, runnerInstance.LocalPlayer);
-                var manager = managerObject.GetComponent<NetworkGameManager>();
-                manager?.Configure(selectedMode, matchDurationSeconds);
-            }
+            TryEnsureGameManagerSpawned(runnerInstance);
 
             if (networkPlayerPrefab == null || player != runnerInstance.LocalPlayer || _spawned.ContainsKey(player))
             {
@@ -209,6 +205,24 @@ namespace ProjectA.Networking
 
             var spawned = runnerInstance.Spawn(networkPlayerPrefab, spawnPosition, Quaternion.identity, player);
             _spawned[player] = spawned;
+        }
+
+        private void TryEnsureGameManagerSpawned(NetworkRunner runnerInstance)
+        {
+            if (networkGameManagerPrefab == null || !runnerInstance.IsSharedModeMasterClient)
+            {
+                return;
+            }
+
+            if (_managerSpawnRequested || NetworkGameManager.Instance != null || FindObjectOfType<NetworkGameManager>() != null)
+            {
+                return;
+            }
+
+            _managerSpawnRequested = true;
+            var managerObject = runnerInstance.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity, runnerInstance.LocalPlayer);
+            var manager = managerObject.GetComponent<NetworkGameManager>();
+            manager?.Configure(selectedMode, matchDurationSeconds);
         }
 
         public void OnPlayerLeft(NetworkRunner runnerInstance, PlayerRef player)
@@ -252,6 +266,7 @@ namespace ProjectA.Networking
         public void OnShutdown(NetworkRunner runnerInstance, ShutdownReason shutdownReason)
         {
             _spawned.Clear();
+            _managerSpawnRequested = false;
         }
     }
 }

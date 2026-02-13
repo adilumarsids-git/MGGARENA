@@ -104,6 +104,8 @@ Example render logic per row:
 
 
 ## Local camera note
+- `NetworkCharacter` enables child `Camera`/`AudioListener` only on the input-authority player, so each client keeps its own player camera active.
+- Runtime spawns a single `NetworkGameManager`; duplicate spawns are now guarded in `FusionBootstrap`/`NetworkGameManager`.
 - `NetworkCharacter` now enables `MOST_Action` components only for input-authority player instances to prevent remote clones from driving camera actions.
 - `NetworkedCharacter.prefab` includes a child camera object `LocalPlayerCamera` by default.
 - `LocalPlayerCamera` is intentionally **Untagged** (not `MainCamera`) to avoid automatic `Camera.main` control by unrelated systems.

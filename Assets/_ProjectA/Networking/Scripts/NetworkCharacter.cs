@@ -268,6 +268,16 @@ namespace ProjectA.Networking
             {
                 action.enabled = isLocal;
             }
+
+            foreach (var cam in GetComponentsInChildren<Camera>(true))
+            {
+                cam.enabled = isLocal;
+            }
+
+            foreach (var listener in GetComponentsInChildren<AudioListener>(true))
+            {
+                listener.enabled = isLocal;
+            }
         }
     }
 }
