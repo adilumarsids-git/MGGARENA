@@ -71,18 +71,19 @@ namespace Solo.MOST_IN_ONE
         {
             newValue = Mathf.Max(0, newValue);
             GameObject spText = null;
+            var cameraRotation = Camera.main != null ? Camera.main.transform.rotation : Quaternion.identity;
             Vector3 spPoint = new(Random.Range(SpawndTextOffsetA.x, SpawndTextOffsetB.x),
                         Random.Range(SpawndTextOffsetA.y, SpawndTextOffsetB.y), Random.Range(SpawndTextOffsetA.z, SpawndTextOffsetB.z));
 
             if (Health > newValue) // Damage
             {
-                if (newValue / MaxHealth < LowHealthRange / 100) AnimationOnLowHealth.Play();
-                if(SpawndDamageText) spText = Instantiate(SpawndDamageText, transform.position + new Vector3(0, spPoint.y, 0), Camera.main.transform.rotation);
+                if (AnimationOnLowHealth && newValue / MaxHealth < LowHealthRange / 100) AnimationOnLowHealth.Play();
+                if(SpawndDamageText) spText = Instantiate(SpawndDamageText, transform.position + new Vector3(0, spPoint.y, 0), cameraRotation);
             }
             else if (Health < newValue) // Healing
             {
-                if (newValue / MaxHealth > LowHealthRange / 100) AnimationOnLowHealth.Stop();
-                if (SpawndHealingText) spText = Instantiate(SpawndHealingText, transform.position + new Vector3(0, spPoint.y, 0), Camera.main.transform.rotation);
+                if (AnimationOnLowHealth && newValue / MaxHealth > LowHealthRange / 100) AnimationOnLowHealth.Stop();
+                if (SpawndHealingText) spText = Instantiate(SpawndHealingText, transform.position + new Vector3(0, spPoint.y, 0), cameraRotation);
             }
 
             if (spText != null)
@@ -91,14 +92,14 @@ namespace Solo.MOST_IN_ONE
                     + spText.transform.TransformDirection(Vector3.forward) * spPoint.z;
 
                 TMP_Text text = spText.transform.GetComponentInChildren<TMP_Text>();
-                text.text = Mathf.Abs(Health - newValue).ToString();
+                if (text) text.text = Mathf.Abs(Health - newValue).ToString();
                 Destroy(spText, 5);
             }
             if(EnableHide) PlayFadeAnimation();
             Health = newValue;
             if (MovingBar) MovingBar.localPosition = new Vector3(-ZeroPoint * (MaxHealth - Health) / MaxHealth, MovingBar.localPosition.y, MovingBar.localPosition.z);
             if(HealthText) HealthText.text = Health.ToString();
-            foreach (Animation anim in OnUpdateAnimations) anim.Play();
+            foreach (Animation anim in OnUpdateAnimations) if (anim) anim.Play();
         }
 
         public void ResetMaxHealth(float newValue)
