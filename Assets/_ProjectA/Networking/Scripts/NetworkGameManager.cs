@@ -10,6 +10,7 @@ namespace ProjectA.Networking
         public static NetworkGameManager Instance { get; private set; }
 
         [SerializeField] private float matchDurationSeconds = 180f;
+        [SerializeField] private FusionGameMode configuredMode = FusionGameMode.FFA;
 
         [Networked] public TickTimer MatchTimer { get; private set; }
         [Networked] public NetworkBool MatchLocked { get; private set; }
@@ -27,9 +28,9 @@ namespace ProjectA.Networking
         {
             Instance = this;
 
-            if (Object.HasStateAuthority)
+            if (Object != null && Object.HasStateAuthority)
             {
-                StartMatch((FusionGameMode)ModeValue, matchDurationSeconds);
+                StartMatch(configuredMode, matchDurationSeconds);
             }
         }
 
@@ -56,13 +57,15 @@ namespace ProjectA.Networking
 
         public void Configure(FusionGameMode mode, float durationSeconds)
         {
-            if (!Object.HasStateAuthority)
+            configuredMode = mode;
+            matchDurationSeconds = durationSeconds;
+
+            if (!IsSpawned || Object == null || !Object.HasStateAuthority)
             {
                 return;
             }
 
-            ModeValue = (int)mode;
-            matchDurationSeconds = durationSeconds;
+            StartMatch(configuredMode, matchDurationSeconds);
         }
 
         public void RegisterNickname(int playerRaw, string nickname)
