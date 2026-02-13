@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using Fusion;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ProjectA
 {
@@ -15,15 +15,20 @@ namespace ProjectA
         public async void StartSharedSession()
         {
             if (_runner != null) return;
+
             _runner = Instantiate(runnerPrefab);
             _runner.ProvideInput = true;
             _runner.AddCallbacks(inputProvider);
+
+            var sceneInfo = new NetworkSceneInfo();
+            var activeScene = SceneManager.GetActiveScene();
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(activeScene.buildIndex), LoadSceneMode.Single);
 
             await _runner.StartGame(new StartGameArgs
             {
                 GameMode = GameMode.Shared,
                 SessionName = sessionName,
-                Scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex,
+                Scene = sceneInfo,
                 PlayerCount = 6
             });
         }
