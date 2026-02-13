@@ -14,7 +14,7 @@ namespace ProjectA.Networking
         [Header("Runner")]
         [SerializeField] private NetworkRunner runner;
         [SerializeField] private NetworkSceneManagerDefault sceneManager;
-        [SerializeField] private NetworkInputProvider inputProvider;
+        [SerializeField] private NetworkInputProvider_MOST inputProvider;
 
         [Header("Spawn")]
         [SerializeField] private NetworkObject networkPlayerPrefab;
@@ -146,7 +146,7 @@ namespace ProjectA.Networking
 
             if (inputProvider == null)
             {
-                inputProvider = gameObject.GetComponent<NetworkInputProvider>() ?? gameObject.AddComponent<NetworkInputProvider>();
+                inputProvider = gameObject.GetComponent<NetworkInputProvider_MOST>() ?? gameObject.AddComponent<NetworkInputProvider_MOST>();
             }
 
             if (spawnPoints == null)

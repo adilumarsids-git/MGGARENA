@@ -84,7 +84,7 @@ MonoBehaviour:
   runner: {fileID: 0}
   sceneManager: {fileID: 0}
   inputProvider: {fileID: 0}
-  networkPlayerPrefab: {fileID: 500000000000000003, guid: c6dbceb67c1b4d3c8b9673cd099a9dab, type: 3}
+  networkPlayerPrefab: {fileID: 910000000000000003, guid: 36c9591bb437404387a010848bf730d1, type: 3}
   spawnPoints: {fileID: 0}
   selectedMode: 0
   matchSceneName: Match
