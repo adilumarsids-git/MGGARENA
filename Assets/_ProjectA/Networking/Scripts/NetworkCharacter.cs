@@ -101,13 +101,15 @@ namespace ProjectA.Networking
                 return;
             }
 
-            var direction = new Vector3(input.Move.x, 0f, input.Move.y);
+            var moveInput = SanitizeMoveInput(input.Move);
+            var direction = new Vector3(moveInput.x, 0f, moveInput.y);
             if (direction.sqrMagnitude > 0.0001f)
             {
-                NetRotation = Quaternion.LookRotation(direction.normalized);
+                var moveDir = direction.normalized;
+                NetRotation = Quaternion.LookRotation(moveDir);
+                NetPosition += moveDir * (moveSpeed * moveInput.magnitude * Runner.DeltaTime);
             }
 
-            NetPosition += direction * moveSpeed * Runner.DeltaTime;
             transform.SetPositionAndRotation(NetPosition, NetRotation);
 
             if (input.Buttons.IsSet(NetworkPlayerInputData.Basic))
@@ -121,7 +123,7 @@ namespace ProjectA.Networking
             }
         }
 
-        public Vector2 ReadMoveInput() => moveJoystick != null ? moveJoystick.GetAxis() : Vector2.zero;
+        public Vector2 ReadMoveInput() => moveJoystick != null ? moveJoystick.GetRawValue() : Vector2.zero;
         public bool ReadBasicPressed() => shootJoystick != null ? shootJoystick.GetMagnitude() > 0.6f : Input.GetMouseButton(0);
         public bool ReadUltimatePressed() => throwJoystick != null ? throwJoystick.GetMagnitude() > 0.6f : Input.GetKey(KeyCode.E);
         public bool ReadJumpPressed() => Input.GetKey(KeyCode.Space);
@@ -190,6 +192,22 @@ namespace ProjectA.Networking
             var aim = ResolveAimDirection(movementDirection);
             var projectileObject = Runner.Spawn(projectilePrefab, origin, Quaternion.LookRotation(aim), Object.InputAuthority);
             projectileObject.GetComponent<NetworkProjectile>()?.Initialize(this, aim, speed, damage);
+        }
+
+
+        private static Vector2 SanitizeMoveInput(Vector2 move)
+        {
+            if (!float.IsFinite(move.x) || !float.IsFinite(move.y))
+            {
+                return Vector2.zero;
+            }
+
+            if (move.sqrMagnitude > 1f)
+            {
+                move.Normalize();
+            }
+
+            return move;
         }
 
         private Vector3 ResolveAimDirection(Vector3 movementDirection)
