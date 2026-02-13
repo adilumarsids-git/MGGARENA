@@ -18,7 +18,9 @@ namespace ProjectA.Networking
 
         [Header("Spawn")]
         [SerializeField] private NetworkObject networkPlayerPrefab;
+        [SerializeField] private NetworkObject networkGameManagerPrefab;
         [SerializeField] private NetworkSpawnPoints spawnPoints;
+        [SerializeField] private float matchDurationSeconds = 180f;
 
         [Header("Match")]
         [SerializeField] private FusionGameMode selectedMode = FusionGameMode.FFA;
@@ -157,6 +159,13 @@ namespace ProjectA.Networking
 
         public void OnPlayerJoined(NetworkRunner runnerInstance, PlayerRef player)
         {
+            if (networkGameManagerPrefab != null && runnerInstance.IsSharedModeMasterClient && NetworkGameManager.Instance == null)
+            {
+                var managerObject = runnerInstance.Spawn(networkGameManagerPrefab, Vector3.zero, Quaternion.identity, runnerInstance.LocalPlayer);
+                var manager = managerObject.GetComponent<NetworkGameManager>();
+                manager?.Configure(selectedMode, matchDurationSeconds);
+            }
+
             if (networkPlayerPrefab == null || player != runnerInstance.LocalPlayer || _spawned.ContainsKey(player))
             {
                 return;

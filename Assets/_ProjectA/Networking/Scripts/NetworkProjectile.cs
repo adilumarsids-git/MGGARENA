@@ -11,6 +11,7 @@ namespace ProjectA.Networking
         [Networked] private int Damage { get; set; }
         [Networked] private TickTimer LifeTimer { get; set; }
         [Networked] private NetworkId OwnerId { get; set; }
+        [Networked] private int OwnerPlayerRaw { get; set; }
 
         [SerializeField] private float lifetimeSeconds = 3f;
         [SerializeField] private float hitRadius = 0.3f;
@@ -23,6 +24,7 @@ namespace ProjectA.Networking
             }
 
             OwnerId = owner.Object.Id;
+            OwnerPlayerRaw = owner.PlayerRaw;
             Direction = direction.sqrMagnitude < 0.001f ? owner.transform.forward : direction.normalized;
             Speed = Mathf.Max(0f, speed);
             Damage = Mathf.Max(1, damage);
@@ -33,6 +35,12 @@ namespace ProjectA.Networking
         {
             if (!Object.HasStateAuthority)
             {
+                return;
+            }
+
+            if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsMatchLocked)
+            {
+                Runner.Despawn(Object);
                 return;
             }
 
@@ -53,7 +61,7 @@ namespace ProjectA.Networking
                     continue;
                 }
 
-                target.ApplyDamage(Damage);
+                target.ApplyDamage(Damage, OwnerPlayerRaw);
                 Runner.Despawn(Object);
                 break;
             }

@@ -85,7 +85,9 @@ MonoBehaviour:
   sceneManager: {fileID: 0}
   inputProvider: {fileID: 0}
   networkPlayerPrefab: {fileID: 910000000000000003, guid: 36c9591bb437404387a010848bf730d1, type: 3}
+  networkGameManagerPrefab: {fileID: 930000000000000003, guid: 0b7734e5f2ec42f69381442a5377abe5, type: 3}
   spawnPoints: {fileID: 0}
+  matchDurationSeconds: 180
   selectedMode: 0
   matchSceneName: Match
   lobbySceneName: Lobby

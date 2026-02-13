@@ -12,9 +12,13 @@ namespace ProjectA.Networking
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 4.5f;
 
+        [Header("Identity")]
+        [SerializeField] private string nickname = "";
+
         [Header("Health")]
         [SerializeField] private int maxHealth = 100;
         [Networked] public int Health { get; private set; }
+        [Networked] public NetworkBool IsEliminated { get; private set; }
         [SerializeField] private HealthBar healthBar;
 
         [Header("Projectiles")]
@@ -37,11 +41,14 @@ namespace ProjectA.Networking
         [SerializeField] private MOST_Controller shootJoystick;
         [SerializeField] private MOST_Controller throwJoystick;
 
+        public int PlayerRaw => Object.InputAuthority.RawEncoded;
+
         public override void Spawned()
         {
             if (Object.HasStateAuthority)
             {
                 Health = maxHealth;
+                IsEliminated = false;
             }
 
             AutoWireReferences();
@@ -51,6 +58,11 @@ namespace ProjectA.Networking
             if (Object.HasInputAuthority)
             {
                 LocalCharacter = this;
+                if (NetworkGameManager.Instance != null)
+                {
+                    var finalName = string.IsNullOrWhiteSpace(nickname) ? $"Player {PlayerRaw}" : nickname;
+                    NetworkGameManager.Instance.RegisterNickname(PlayerRaw, finalName);
+                }
             }
         }
 
@@ -69,7 +81,12 @@ namespace ProjectA.Networking
 
         public override void FixedUpdateNetwork()
         {
-            if (!Object.HasStateAuthority)
+            if (!Object.HasStateAuthority || IsEliminated)
+            {
+                return;
+            }
+
+            if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsMatchLocked)
             {
                 return;
             }
@@ -113,21 +130,46 @@ namespace ProjectA.Networking
             return Input.GetKey(KeyCode.Space);
         }
 
-        public void ApplyDamage(int damage)
+        public void ApplyDamage(int damage, int attackerPlayerRaw = int.MinValue)
         {
-            if (Object.HasStateAuthority)
+            if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsMatchLocked)
             {
-                Health = Mathf.Max(0, Health - Mathf.Abs(damage));
                 return;
             }
 
-            RPC_RequestDamage(damage);
+            if (Object.HasStateAuthority)
+            {
+                ApplyDamageStateAuthority(damage, attackerPlayerRaw);
+                return;
+            }
+
+            RPC_RequestDamage(damage, attackerPlayerRaw);
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        private void RPC_RequestDamage(int damage, RpcInfo info = default)
+        private void RPC_RequestDamage(int damage, int attackerPlayerRaw, RpcInfo info = default)
         {
+            ApplyDamageStateAuthority(damage, attackerPlayerRaw);
+        }
+
+        private void ApplyDamageStateAuthority(int damage, int attackerPlayerRaw)
+        {
+            if (IsEliminated)
+            {
+                return;
+            }
+
             Health = Mathf.Max(0, Health - Mathf.Abs(damage));
+            if (Health > 0)
+            {
+                return;
+            }
+
+            IsEliminated = true;
+            if (NetworkGameManager.Instance != null)
+            {
+                NetworkGameManager.Instance.RegisterElimination(attackerPlayerRaw, PlayerRaw);
+            }
         }
 
         private void TryFireBasic(Vector3 movementDirection)
