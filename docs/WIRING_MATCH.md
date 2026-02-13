@@ -104,6 +104,7 @@ Example render logic per row:
 
 
 ## Local camera note
+- `NetworkCharacter` now enables `MOST_Action` components only for input-authority player instances to prevent remote clones from driving camera actions.
 - `NetworkedCharacter.prefab` includes a child camera object `LocalPlayerCamera` by default.
 - `LocalPlayerCamera` is intentionally **Untagged** (not `MainCamera`) to avoid automatic `Camera.main` control by unrelated systems.
 - Reparent/retarget and tag/assign this camera under `CharacterModel/MOST_Action` manually as needed for your setup.

@@ -245,6 +245,11 @@ namespace ProjectA.Networking
                 controller.enabled = isLocal;
                 if (!isLocal) controller.gameObject.SetActive(false);
             }
+
+            foreach (var action in GetComponentsInChildren<MOST_Action>(true))
+            {
+                action.enabled = isLocal;
+            }
         }
     }
 }
