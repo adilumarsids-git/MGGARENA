@@ -11,6 +11,8 @@ namespace ProjectA.Networking
 
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 4.5f;
+        [Networked] private Vector3 NetPosition { get; set; }
+        [Networked] private Quaternion NetRotation { get; set; }
 
         [Header("Identity")]
         [SerializeField] private string nickname = "";
@@ -41,6 +43,11 @@ namespace ProjectA.Networking
         [SerializeField] private MOST_Controller shootJoystick;
         [SerializeField] private MOST_Controller throwJoystick;
 
+        [Header("Local Camera")]
+        [SerializeField] private bool createLocalCamera = true;
+        [SerializeField] private Vector3 cameraOffset = new(0f, 10f, -8f);
+        [SerializeField] private Vector3 cameraEuler = new(35f, 0f, 0f);
+
         public int PlayerRaw => Object.InputAuthority.RawEncoded;
 
         public override void Spawned()
@@ -49,10 +56,13 @@ namespace ProjectA.Networking
             {
                 Health = maxHealth;
                 IsEliminated = false;
+                NetPosition = transform.position;
+                NetRotation = transform.rotation;
             }
 
             AutoWireReferences();
             ConfigureLocalOnlyUI(Object.HasInputAuthority);
+            EnsureLocalCameraIfNeeded();
             SyncHealthBarImmediate();
 
             if (Object.HasInputAuthority)
@@ -68,6 +78,7 @@ namespace ProjectA.Networking
 
         public override void Render()
         {
+            transform.SetPositionAndRotation(NetPosition, NetRotation);
             SyncHealthBarImmediate();
         }
 
@@ -97,7 +108,13 @@ namespace ProjectA.Networking
             }
 
             var direction = new Vector3(input.Move.x, 0f, input.Move.y);
-            transform.position += direction * moveSpeed * Runner.DeltaTime;
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                NetRotation = Quaternion.LookRotation(direction.normalized);
+            }
+
+            NetPosition += direction * moveSpeed * Runner.DeltaTime;
+            transform.SetPositionAndRotation(NetPosition, NetRotation);
 
             if (input.Buttons.IsSet(NetworkPlayerInputData.Basic))
             {
@@ -110,25 +127,10 @@ namespace ProjectA.Networking
             }
         }
 
-        public Vector2 ReadMoveInput()
-        {
-            return moveJoystick != null ? moveJoystick.GetAxis() : Vector2.zero;
-        }
-
-        public bool ReadBasicPressed()
-        {
-            return shootJoystick != null ? shootJoystick.GetMagnitude() > 0.6f : Input.GetMouseButton(0);
-        }
-
-        public bool ReadUltimatePressed()
-        {
-            return throwJoystick != null ? throwJoystick.GetMagnitude() > 0.6f : Input.GetKey(KeyCode.E);
-        }
-
-        public bool ReadJumpPressed()
-        {
-            return Input.GetKey(KeyCode.Space);
-        }
+        public Vector2 ReadMoveInput() => moveJoystick != null ? moveJoystick.GetAxis() : Vector2.zero;
+        public bool ReadBasicPressed() => shootJoystick != null ? shootJoystick.GetMagnitude() > 0.6f : Input.GetMouseButton(0);
+        public bool ReadUltimatePressed() => throwJoystick != null ? throwJoystick.GetMagnitude() > 0.6f : Input.GetKey(KeyCode.E);
+        public bool ReadJumpPressed() => Input.GetKey(KeyCode.Space);
 
         public void ApplyDamage(int damage, int attackerPlayerRaw = int.MinValue)
         {
@@ -174,38 +176,26 @@ namespace ProjectA.Networking
 
         private void TryFireBasic(Vector3 movementDirection)
         {
-            if (!BasicCooldown.ExpiredOrNotRunning(Runner))
-            {
-                return;
-            }
-
+            if (!BasicCooldown.ExpiredOrNotRunning(Runner)) return;
             BasicCooldown = TickTimer.CreateFromSeconds(Runner, basicCooldownSeconds);
             SpawnProjectile(basicDamage, basicProjectileSpeed, movementDirection);
         }
 
         private void TryFireUltimate(Vector3 movementDirection)
         {
-            if (!UltimateCooldown.ExpiredOrNotRunning(Runner))
-            {
-                return;
-            }
-
+            if (!UltimateCooldown.ExpiredOrNotRunning(Runner)) return;
             UltimateCooldown = TickTimer.CreateFromSeconds(Runner, ultimateCooldownSeconds);
             SpawnProjectile(ultimateDamage, ultimateProjectileSpeed, movementDirection);
         }
 
         private void SpawnProjectile(int damage, float speed, Vector3 movementDirection)
         {
-            if (projectilePrefab == null)
-            {
-                return;
-            }
+            if (projectilePrefab == null) return;
 
             var origin = projectileSpawnPoint != null ? projectileSpawnPoint.position : transform.position + Vector3.up;
             var aim = ResolveAimDirection(movementDirection);
             var projectileObject = Runner.Spawn(projectilePrefab, origin, Quaternion.LookRotation(aim), Object.InputAuthority);
-            var projectile = projectileObject.GetComponent<NetworkProjectile>();
-            projectile?.Initialize(this, aim, speed, damage);
+            projectileObject.GetComponent<NetworkProjectile>()?.Initialize(this, aim, speed, damage);
         }
 
         private Vector3 ResolveAimDirection(Vector3 movementDirection)
@@ -213,26 +203,16 @@ namespace ProjectA.Networking
             if (throwJoystick != null)
             {
                 var axis = throwJoystick.GetAxis();
-                if (axis.sqrMagnitude > 0.04f)
-                {
-                    return new Vector3(axis.x, 0f, axis.y).normalized;
-                }
+                if (axis.sqrMagnitude > 0.04f) return new Vector3(axis.x, 0f, axis.y).normalized;
             }
 
             if (shootJoystick != null)
             {
-                var shootAxis = shootJoystick.GetAxis();
-                if (shootAxis.sqrMagnitude > 0.04f)
-                {
-                    return new Vector3(shootAxis.x, 0f, shootAxis.y).normalized;
-                }
+                var axis = shootJoystick.GetAxis();
+                if (axis.sqrMagnitude > 0.04f) return new Vector3(axis.x, 0f, axis.y).normalized;
             }
 
-            if (movementDirection.sqrMagnitude > 0.04f)
-            {
-                return movementDirection.normalized;
-            }
-
+            if (movementDirection.sqrMagnitude > 0.04f) return movementDirection.normalized;
             return transform.forward.sqrMagnitude > 0.1f ? transform.forward : Vector3.forward;
         }
 
@@ -245,63 +225,51 @@ namespace ProjectA.Networking
 
             if (moveJoystick == null || shootJoystick == null || throwJoystick == null)
             {
-                var controllers = GetComponentsInChildren<MOST_Controller>(true);
-                foreach (var controller in controllers)
+                foreach (var controller in GetComponentsInChildren<MOST_Controller>(true))
                 {
                     var lower = controller.name.ToLowerInvariant();
-                    if (moveJoystick == null && lower.Contains("move"))
-                    {
-                        moveJoystick = controller;
-                        continue;
-                    }
-
-                    if (shootJoystick == null && lower.Contains("shoot"))
-                    {
-                        shootJoystick = controller;
-                        continue;
-                    }
-
-                    if (throwJoystick == null && lower.Contains("throw"))
-                    {
-                        throwJoystick = controller;
-                    }
+                    if (moveJoystick == null && lower.Contains("move")) { moveJoystick = controller; continue; }
+                    if (shootJoystick == null && lower.Contains("shoot")) { shootJoystick = controller; continue; }
+                    if (throwJoystick == null && lower.Contains("throw")) { throwJoystick = controller; }
                 }
             }
 
-            if (projectileSpawnPoint == null)
-            {
-                projectileSpawnPoint = transform;
-            }
+            if (projectileSpawnPoint == null) projectileSpawnPoint = transform;
         }
 
-        private void SyncHealthBarImmediate()
+        private void EnsureLocalCameraIfNeeded()
         {
-            if (healthBar == null)
+            if (!createLocalCamera || !Object.HasInputAuthority)
             {
                 return;
             }
 
-            if (healthBar.MaxHealth <= 0f)
+            if (Camera.main != null)
             {
-                healthBar.ResetMaxHealth(maxHealth);
+                return;
             }
 
-            if (Mathf.Abs(healthBar.Health - Health) > 0.01f)
-            {
-                healthBar.UpdateHealth(Health);
-            }
+            var cameraGo = new GameObject("LocalPlayerCamera");
+            cameraGo.transform.SetParent(transform, false);
+            cameraGo.transform.localPosition = cameraOffset;
+            cameraGo.transform.localRotation = Quaternion.Euler(cameraEuler);
+            cameraGo.AddComponent<Camera>();
+            cameraGo.AddComponent<AudioListener>();
+        }
+
+        private void SyncHealthBarImmediate()
+        {
+            if (healthBar == null) return;
+            if (healthBar.MaxHealth <= 0f) healthBar.ResetMaxHealth(maxHealth);
+            if (Mathf.Abs(healthBar.Health - Health) > 0.01f) healthBar.UpdateHealth(Health);
         }
 
         private void ConfigureLocalOnlyUI(bool isLocal)
         {
-            var controllers = GetComponentsInChildren<MOST_Controller>(true);
-            foreach (var controller in controllers)
+            foreach (var controller in GetComponentsInChildren<MOST_Controller>(true))
             {
                 controller.enabled = isLocal;
-                if (!isLocal)
-                {
-                    controller.gameObject.SetActive(false);
-                }
+                if (!isLocal) controller.gameObject.SetActive(false);
             }
         }
     }

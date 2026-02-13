@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ProjectA.Networking
 {
@@ -11,6 +12,8 @@ namespace ProjectA.Networking
 
         [SerializeField] private float matchDurationSeconds = 180f;
         [SerializeField] private FusionGameMode configuredMode = FusionGameMode.FFA;
+        [SerializeField] private bool autoLoadResultsSceneOnEnd = true;
+        [SerializeField] private string resultsSceneName = "Results";
 
         [Networked] public TickTimer MatchTimer { get; private set; }
         [Networked] public NetworkBool MatchLocked { get; private set; }
@@ -23,6 +26,7 @@ namespace ProjectA.Networking
 
         public bool IsMatchLocked => MatchLocked;
         public FusionGameMode Mode => (FusionGameMode)ModeValue;
+        public float RemainingSeconds => MatchTimer.IsRunning ? (MatchTimer.RemainingTime(Runner) ?? 0f) : 0f;
 
         public override void Spawned()
         {
@@ -112,6 +116,7 @@ namespace ProjectA.Networking
             _scoreByPlayer.Clear();
 
             MatchResultsData.Clear(mode);
+            Debug.Log($"[NetworkGameManager] Match started. Mode={mode}, Duration={durationSeconds:0.0}s");
         }
 
         private void EndMatch()
@@ -119,6 +124,7 @@ namespace ProjectA.Networking
             MatchLocked = true;
 
             var ranking = BuildRanking();
+            Debug.Log($"[NetworkGameManager] Match ended. Players={ranking.Count}");
             RPC_ClearResults(ModeValue);
 
             var rank = 1;
@@ -127,6 +133,11 @@ namespace ProjectA.Networking
                 _scoreByPlayer.TryGetValue(raw, out var score);
                 RPC_AddResult(raw, rank, score);
                 rank++;
+            }
+
+            if (autoLoadResultsSceneOnEnd && !string.IsNullOrWhiteSpace(resultsSceneName))
+            {
+                RPC_LoadResultsScene(resultsSceneName);
             }
         }
 
@@ -201,6 +212,17 @@ namespace ProjectA.Networking
             _scoreByPlayer[playerRaw] = score;
             TeamAScore = teamAScore;
             TeamBScore = teamBScore;
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_LoadResultsScene(string sceneName)
+        {
+            if (SceneManager.GetActiveScene().name == sceneName)
+            {
+                return;
+            }
+
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

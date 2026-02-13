@@ -101,3 +101,8 @@ Example render logic per row:
    - no projectile spawn
    - no damage updates
 4. Verify results list contains consecutive ranks from `1..N`.
+
+
+## Local camera note
+- `NetworkCharacter` now auto-creates a local camera for the input-authority player if no `Camera.main` exists.
+- This avoids the `No cameras rendering` screen in Match scene.
