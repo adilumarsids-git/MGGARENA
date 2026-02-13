@@ -13,14 +13,10 @@ namespace ProjectA.Networking
             if (localCharacter != null)
             {
                 data.Move = localCharacter.ReadMoveInput();
+
                 if (localCharacter.ReadBasicPressed())
                 {
                     data.Buttons.Set(NetworkPlayerInputData.Basic, true);
-                }
-
-                if (localCharacter.ReadActivePressed())
-                {
-                    data.Buttons.Set(NetworkPlayerInputData.Active, true);
                 }
 
                 if (localCharacter.ReadUltimatePressed())
@@ -45,7 +41,6 @@ namespace ProjectA.Networking
 
             data.Move = move;
             if (Input.GetMouseButton(0)) data.Buttons.Set(NetworkPlayerInputData.Basic, true);
-            if (Input.GetKey(KeyCode.Q)) data.Buttons.Set(NetworkPlayerInputData.Active, true);
             if (Input.GetKey(KeyCode.E)) data.Buttons.Set(NetworkPlayerInputData.Ultimate, true);
             if (Input.GetKey(KeyCode.Space)) data.Buttons.Set(NetworkPlayerInputData.Jump, true);
             return data;

@@ -5,7 +5,6 @@ using UnityEngine;
 namespace ProjectA.Networking
 {
     [RequireComponent(typeof(NetworkObject))]
-    [RequireComponent(typeof(AbilitySystem))]
     public class NetworkCharacter : NetworkBehaviour
     {
         public static NetworkCharacter LocalCharacter { get; private set; }
@@ -16,33 +15,48 @@ namespace ProjectA.Networking
         [Header("Health")]
         [SerializeField] private int maxHealth = 100;
         [Networked] public int Health { get; private set; }
+        [SerializeField] private HealthBar healthBar;
 
         [Header("Projectiles")]
         [SerializeField] private NetworkObject projectilePrefab;
         [SerializeField] private Transform projectileSpawnPoint;
 
+        [Header("Cooldowns")]
+        [SerializeField] private float basicCooldownSeconds = 0.35f;
+        [SerializeField] private float ultimateCooldownSeconds = 4f;
+        [SerializeField] private int basicDamage = 10;
+        [SerializeField] private int ultimateDamage = 28;
+        [SerializeField] private float basicProjectileSpeed = 14f;
+        [SerializeField] private float ultimateProjectileSpeed = 10f;
+
+        [Networked] private TickTimer BasicCooldown { get; set; }
+        [Networked] private TickTimer UltimateCooldown { get; set; }
+
         [Header("MOST Input Sources")]
         [SerializeField] private MOST_Controller moveJoystick;
         [SerializeField] private MOST_Controller shootJoystick;
-
-        public AbilitySystem Ability { get; private set; }
+        [SerializeField] private MOST_Controller throwJoystick;
 
         public override void Spawned()
         {
-            Ability = GetComponent<AbilitySystem>();
-
             if (Object.HasStateAuthority)
             {
                 Health = maxHealth;
             }
 
-            AutoWireControllers();
+            AutoWireReferences();
             ConfigureLocalOnlyUI(Object.HasInputAuthority);
+            SyncHealthBarImmediate();
 
             if (Object.HasInputAuthority)
             {
                 LocalCharacter = this;
             }
+        }
+
+        public override void Render()
+        {
+            SyncHealthBarImmediate();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
@@ -70,48 +84,28 @@ namespace ProjectA.Networking
 
             if (input.Buttons.IsSet(NetworkPlayerInputData.Basic))
             {
-                TryFireAbility(AbilityType.Basic, direction);
-            }
-
-            if (input.Buttons.IsSet(NetworkPlayerInputData.Active))
-            {
-                TryFireAbility(AbilityType.Active, direction);
+                TryFireBasic(direction);
             }
 
             if (input.Buttons.IsSet(NetworkPlayerInputData.Ultimate))
             {
-                TryFireAbility(AbilityType.Ultimate, direction);
+                TryFireUltimate(direction);
             }
         }
 
         public Vector2 ReadMoveInput()
         {
-            if (moveJoystick != null)
-            {
-                return moveJoystick.GetAxis();
-            }
-
-            return Vector2.zero;
+            return moveJoystick != null ? moveJoystick.GetAxis() : Vector2.zero;
         }
 
         public bool ReadBasicPressed()
         {
-            if (shootJoystick != null)
-            {
-                return shootJoystick.GetMagnitude() > 0.6f;
-            }
-
-            return Input.GetMouseButton(0);
-        }
-
-        public bool ReadActivePressed()
-        {
-            return Input.GetKey(KeyCode.Q);
+            return shootJoystick != null ? shootJoystick.GetMagnitude() > 0.6f : Input.GetMouseButton(0);
         }
 
         public bool ReadUltimatePressed()
         {
-            return Input.GetKey(KeyCode.E);
+            return throwJoystick != null ? throwJoystick.GetMagnitude() > 0.6f : Input.GetKey(KeyCode.E);
         }
 
         public bool ReadJumpPressed()
@@ -136,14 +130,31 @@ namespace ProjectA.Networking
             Health = Mathf.Max(0, Health - Mathf.Abs(damage));
         }
 
-        private void TryFireAbility(AbilityType abilityType, Vector3 movementDirection)
+        private void TryFireBasic(Vector3 movementDirection)
         {
-            if (Ability == null || projectilePrefab == null)
+            if (!BasicCooldown.ExpiredOrNotRunning(Runner))
             {
                 return;
             }
 
-            if (!Ability.TryConsume(abilityType, out var definition))
+            BasicCooldown = TickTimer.CreateFromSeconds(Runner, basicCooldownSeconds);
+            SpawnProjectile(basicDamage, basicProjectileSpeed, movementDirection);
+        }
+
+        private void TryFireUltimate(Vector3 movementDirection)
+        {
+            if (!UltimateCooldown.ExpiredOrNotRunning(Runner))
+            {
+                return;
+            }
+
+            UltimateCooldown = TickTimer.CreateFromSeconds(Runner, ultimateCooldownSeconds);
+            SpawnProjectile(ultimateDamage, ultimateProjectileSpeed, movementDirection);
+        }
+
+        private void SpawnProjectile(int damage, float speed, Vector3 movementDirection)
+        {
+            if (projectilePrefab == null)
             {
                 return;
             }
@@ -152,11 +163,20 @@ namespace ProjectA.Networking
             var aim = ResolveAimDirection(movementDirection);
             var projectileObject = Runner.Spawn(projectilePrefab, origin, Quaternion.LookRotation(aim), Object.InputAuthority);
             var projectile = projectileObject.GetComponent<NetworkProjectile>();
-            projectile?.Initialize(this, aim, definition.projectileSpeed, definition.damage);
+            projectile?.Initialize(this, aim, speed, damage);
         }
 
         private Vector3 ResolveAimDirection(Vector3 movementDirection)
         {
+            if (throwJoystick != null)
+            {
+                var axis = throwJoystick.GetAxis();
+                if (axis.sqrMagnitude > 0.04f)
+                {
+                    return new Vector3(axis.x, 0f, axis.y).normalized;
+                }
+            }
+
             if (shootJoystick != null)
             {
                 var shootAxis = shootJoystick.GetAxis();
@@ -174,9 +194,14 @@ namespace ProjectA.Networking
             return transform.forward.sqrMagnitude > 0.1f ? transform.forward : Vector3.forward;
         }
 
-        private void AutoWireControllers()
+        private void AutoWireReferences()
         {
-            if (moveJoystick == null || shootJoystick == null)
+            if (healthBar == null)
+            {
+                healthBar = GetComponentInChildren<HealthBar>(true);
+            }
+
+            if (moveJoystick == null || shootJoystick == null || throwJoystick == null)
             {
                 var controllers = GetComponentsInChildren<MOST_Controller>(true);
                 foreach (var controller in controllers)
@@ -188,9 +213,15 @@ namespace ProjectA.Networking
                         continue;
                     }
 
-                    if (shootJoystick == null && (lower.Contains("shoot") || lower.Contains("aim") || lower.Contains("throw")))
+                    if (shootJoystick == null && lower.Contains("shoot"))
                     {
                         shootJoystick = controller;
+                        continue;
+                    }
+
+                    if (throwJoystick == null && lower.Contains("throw"))
+                    {
+                        throwJoystick = controller;
                     }
                 }
             }
@@ -198,6 +229,24 @@ namespace ProjectA.Networking
             if (projectileSpawnPoint == null)
             {
                 projectileSpawnPoint = transform;
+            }
+        }
+
+        private void SyncHealthBarImmediate()
+        {
+            if (healthBar == null)
+            {
+                return;
+            }
+
+            if (healthBar.MaxHealth <= 0f)
+            {
+                healthBar.ResetMaxHealth(maxHealth);
+            }
+
+            if (Mathf.Abs(healthBar.Health - Health) > 0.01f)
+            {
+                healthBar.UpdateHealth(Health);
             }
         }
 

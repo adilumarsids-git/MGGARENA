@@ -1,139 +1,101 @@
-# Project A - Combat & Ability Wiring (Fusion Shared + MOST)
+# Project A - Combat Wiring (MOST Shoot/Throw + Fusion Shared)
 
-This phase adds a combat framework on top of the networked MOST character.
+This version removes the separate `AbilitySystem` and uses your existing MOST setup:
+- `JoyStick Shoot` = basic attack trigger
+- `JoyStick Throw` = ultimate trigger
 
-## Added assets
+## What changed
 
-### Scripts
-- `Assets/_ProjectA/Networking/Scripts/AbilitySystem.cs`
-- `Assets/_ProjectA/Networking/Scripts/NetworkProjectile.cs`
-- `Assets/_ProjectA/Networking/Scripts/NetworkCombatHUD.cs`
-- `Assets/_ProjectA/Networking/Scripts/NetworkCharacter.cs` (extended)
-- `Assets/_ProjectA/Networking/Scripts/NetworkInputProvider_MOST.cs` (extended)
-- `Assets/_ProjectA/Networking/Scripts/NetworkPlayerInputData.cs` (extended)
-- `Assets/_ProjectA/Networking/Scripts/FusionBootstrap.cs` (spawn ownership fix)
-
-### Prefabs
-- `Assets/_ProjectA/Networking/Prefabs/NetworkProjectile.prefab`
-- `Assets/_ProjectA/Networking/Prefabs/NetworkedCharacter.prefab` (updated)
+- Removed standalone `AbilitySystem` and `NetworkCombatHUD`.
+- Combat is handled directly in `NetworkCharacter` using:
+  - networked cooldown timers for **basic** and **ultimate**
+  - network projectile spawning
+  - existing `NetworkCharacter.ApplyDamage(...)` for hit damage
+- Health UI is synced through existing MOST `HealthBar` component (already under character canvas).
 
 ---
 
-## Host/Client joystick issue fix (important)
+## Prefabs
 
-`FusionBootstrap` now spawns a character for the **local player on each client** (`player == runner.LocalPlayer`) instead of only host/master spawning everyone.
+### 1) NetworkedCharacter.prefab
+`Assets/_ProjectA/Networking/Prefabs/NetworkedCharacter.prefab`
 
-This ensures each client gets its own input-authority character, so both peers have local joystick control.
-
----
-
-## Ability system
-
-`AbilitySystem` contains 3 abilities:
-- Basic
-- Active
-- Ultimate
-
-Each has:
-- cooldown
-- damage
-- projectile speed
-
-Cooldowns are networked with `TickTimer` and consumed only by `StateAuthority`.
-
-### Input mapping (current baseline)
-- Move: MOST move joystick (fallback WASD)
-- Basic: MOST shoot joystick magnitude > threshold (fallback Mouse0)
-- Active: `Q`
-- Ultimate: `E`
-
----
-
-## Projectile networking strategy (Fusion Shared)
-
-`NetworkProjectile` uses:
+Root has:
 - `NetworkObject`
-- networked direction/speed/damage/lifetime fields
-- movement + collision checks in `FixedUpdateNetwork` on **StateAuthority only**
-
-When projectile hits another `NetworkCharacter`, it calls `ApplyDamage()`.
-
-### Damage authority approach
-- `NetworkCharacter.Health` is `[Networked]`
-- damage mutates health at target `StateAuthority`
-- non-authority callers use RPC request (`RpcTargets.StateAuthority`)
-
-This keeps damage consistent in Shared mode.
-
----
-
-## MOST bridge behavior
-
-`NetworkInputProvider_MOST` reads only `NetworkCharacter.LocalCharacter` inputs.
-Remote characters do not read local joystick input.
-
-`NetworkCharacter` disables MOST controller components for non-input-authority instances.
-
----
-
-## Prefab checklist
-
-## NetworkedCharacter.prefab
-Root must have:
-- `NetworkObject`
-- `AbilitySystem`
 - `NetworkCharacter`
 
 `NetworkCharacter` fields:
 - `Projectile Prefab` -> `NetworkProjectile.prefab`
-- `Move Joystick` / `Shoot Joystick` (optional; auto-wire by name works, manual assignment preferred)
+- `Health Bar` -> (optional) auto-wires from child
+- `Move Joystick` -> (optional) auto-wires `JoyStick Move`
+- `Shoot Joystick` -> (optional) auto-wires `JoyStick Shoot`
+- `Throw Joystick` -> (optional) auto-wires `JoyStick Throw`
 
-## NetworkProjectile.prefab
-Root must have:
+### 2) NetworkProjectile.prefab
+`Assets/_ProjectA/Networking/Prefabs/NetworkProjectile.prefab`
+
+Has:
 - `NetworkObject`
 - `NetworkProjectile`
-- Collider (trigger is okay for helper checks)
+- trigger collider
 
 ---
 
-## Scene hookups
+## Input bridge behavior
 
-### Match scene
-- Ensure `NetworkSpawnPoints` exists.
-- Keep colliders/ground for movement and hit tests.
+`NetworkInputProvider_MOST` now sends:
+- Move axis from `JoyStick Move`
+- Basic button from `JoyStick Shoot`
+- Ultimate button from `JoyStick Throw`
 
-### UI/HUD
-To show simple health + cooldowns:
-1. Create HUD texts (Health, Basic CD, Active CD, Ult CD).
-2. Add `NetworkCombatHUD` to a UI object.
-3. Assign text references in inspector.
+Remote players do not read local joysticks.
 
 ---
 
-## 2-player smoke test
+## Health sync behavior
 
-1. Run 2 clients (Editor + build or 2 editors).
-2. Start from Lobby (`UIFlowController.StartSharedMatch()`).
-3. Verify both players can move with their local controls.
-4. Verify both can trigger basic/active/ultimate projectile shots.
-5. Verify health decreases on hit and replicates on both screens.
-6. Verify cooldown text updates for local player.
+`NetworkCharacter.Health` is `[Networked]`.
+
+On every render tick, `NetworkCharacter` updates the existing `HealthBar` component:
+- sets/reset max when needed
+- calls `HealthBar.UpdateHealth(Health)` when value changes
+
+So your existing in-character health canvas is reused.
 
 ---
 
-## Troubleshooting
+## Shared-mode projectile & damage strategy
 
-- **Only host can move**
-  - Confirm new `FusionBootstrap.OnPlayerJoined` logic is present (local-player spawn per peer).
-  - Confirm each client spawns exactly one local character.
+- Projectile simulation/hit checks run on projectile `StateAuthority`.
+- On hit, projectile calls `target.ApplyDamage(...)`.
+- Damage is finalized at target `StateAuthority` via RPC fallback in `NetworkCharacter`.
 
-- **No projectiles spawning**
-  - Check `NetworkCharacter.projectilePrefab` assigned.
-  - Check ability cooldowns are not locking tests (watch HUD cooldown).
+---
 
-- **Damage not syncing**
-  - Ensure target has `NetworkCharacter` + `NetworkObject`.
-  - Ensure RPC to StateAuthority is not stripped by compile errors.
+## Fix for "only host moves"
 
-- **No joystick fire integration**
-  - Manually assign move/shoot `MOST_Controller` refs in prefab to avoid name mismatch.
+`FusionBootstrap.OnPlayerJoined` now spawns each player's own object when:
+- joined player == `runner.LocalPlayer`
+
+This ensures each client gets input authority for its own character (and therefore local joystick control).
+
+---
+
+## Scene wiring checklist
+
+1. `UIRoot` has `FusionBootstrap`.
+2. `FusionBootstrap.networkPlayerPrefab` -> `NetworkedCharacter.prefab`.
+3. Match scene has `NetworkSpawnPoints`.
+4. Build Settings contains `Lobby` and `Match` scene names matching bootstrap fields.
+
+---
+
+## 2-client smoke test
+
+1. Start client A and client B.
+2. Join from Lobby on both.
+3. Verify each client can move their own character with `JoyStick Move`.
+4. Verify `JoyStick Shoot` fires basic projectile.
+5. Verify `JoyStick Throw` fires ultimate projectile.
+6. Verify hit damage updates health bars on both clients.
+
