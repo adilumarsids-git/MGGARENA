@@ -27,6 +27,7 @@ This guide wires the baseline Fusion networking (Shared mode only).
 6. Keep mode as `FFA` or switch to `Teams`.
 
 > `FusionBootstrap` uses **GameMode.Shared** only.
+> `UIRoot.prefab` now includes `FusionBootstrap` and is `DontDestroyOnLoad`, so Start from Lobby works from persistent UI.
 
 ## 2) Prefab checklist
 
@@ -49,9 +50,13 @@ If Unity shows a missing Fusion component on prefab, re-add `NetworkObject` manu
    - **Team A Spawns** / **Team B Spawns**: placeholder lists
 
 ### B) Start/Leave hooks
-From your UI buttons:
-- Start/Queue button -> call `FusionBootstrap.StartOrJoinSelectedMode()`
-- Leave button -> call `FusionBootstrap.LeaveSessionAndReturnToLobby()`
+From your UI buttons (recommended):
+- Start/Queue button -> call `UIFlowController.StartSharedMatch()`
+- Leave button -> call `UIFlowController.LeaveSharedMatchToLobby()`
+
+Direct Fusion calls are also available:
+- `FusionBootstrap.StartSelectedModeFromUI()`
+- `FusionBootstrap.Instance.LeaveSessionAndReturnToLobby()`
 
 ## 4) Shared-mode behavior
 

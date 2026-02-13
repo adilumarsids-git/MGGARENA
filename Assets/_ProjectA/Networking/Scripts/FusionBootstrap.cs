@@ -9,6 +9,8 @@ namespace ProjectA.Networking
 {
     public class FusionBootstrap : MonoBehaviour, INetworkRunnerCallbacks
     {
+        public static FusionBootstrap Instance { get; private set; }
+
         [Header("Runner")]
         [SerializeField] private NetworkRunner runner;
         [SerializeField] private NetworkSceneManagerDefault sceneManager;
@@ -20,7 +22,8 @@ namespace ProjectA.Networking
 
         [Header("Match")]
         [SerializeField] private FusionGameMode selectedMode = FusionGameMode.FFA;
-        [SerializeField] private string sessionNamePrefix = "projecta";
+        [SerializeField] private string matchSceneName = "Match";
+        [SerializeField] private string lobbySceneName = "Lobby";
         [SerializeField] private int maxPlayers = 8;
 
         private readonly Dictionary<PlayerRef, NetworkObject> _spawned = new();
@@ -29,7 +32,26 @@ namespace ProjectA.Networking
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
             EnsureDependencies();
+        }
+
+        public static void StartSelectedModeFromUI()
+        {
+            if (Instance == null)
+            {
+                Debug.LogError("[FusionBootstrap] No instance found. Ensure UIRoot prefab includes FusionBootstrap.");
+                return;
+            }
+
+            Instance.StartOrJoinSelectedMode();
         }
 
         public async void StartOrJoinSelectedMode()
@@ -52,7 +74,13 @@ namespace ProjectA.Networking
                 return;
             }
 
-            var sceneIndex = SceneManager.GetActiveScene().buildIndex;
+            var sceneIndex = ResolveSceneBuildIndex(matchSceneName);
+            if (sceneIndex < 0)
+            {
+                Debug.LogError($"[FusionBootstrap] Match scene '{matchSceneName}' not found in Build Settings.");
+                return;
+            }
+
             var args = new StartGameArgs
             {
                 GameMode = GameMode.Shared,
@@ -74,7 +102,7 @@ namespace ProjectA.Networking
             }
         }
 
-        public async void LeaveSessionAndReturnToLobby(string lobbySceneName = "Lobby")
+        public async void LeaveSessionAndReturnToLobby()
         {
             if (runner != null && runner.IsRunning)
             {
@@ -85,6 +113,20 @@ namespace ProjectA.Networking
             {
                 SceneManager.LoadScene(lobbySceneName);
             }
+        }
+
+        private int ResolveSceneBuildIndex(string sceneName)
+        {
+            for (var i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                var path = SceneUtility.GetScenePathByBuildIndex(i);
+                if (path.EndsWith($"/{sceneName}.unity", StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private void EnsureDependencies()
@@ -118,6 +160,11 @@ namespace ProjectA.Networking
             if (!runnerInstance.IsSharedModeMasterClient || networkPlayerPrefab == null)
             {
                 return;
+            }
+
+            if (spawnPoints == null)
+            {
+                spawnPoints = FindObjectOfType<NetworkSpawnPoints>();
             }
 
             var spawnPosition = spawnPoints != null
@@ -157,7 +204,10 @@ namespace ProjectA.Networking
         public void OnSessionListUpdated(NetworkRunner runnerInstance, List<SessionInfo> sessionList) { }
         public void OnCustomAuthenticationResponse(NetworkRunner runnerInstance, Dictionary<string, object> data) { }
         public void OnHostMigration(NetworkRunner runnerInstance, HostMigrationToken hostMigrationToken) { }
-        public void OnSceneLoadDone(NetworkRunner runnerInstance) { }
+        public void OnSceneLoadDone(NetworkRunner runnerInstance)
+        {
+            spawnPoints = FindObjectOfType<NetworkSpawnPoints>();
+        }
         public void OnSceneLoadStart(NetworkRunner runnerInstance) { }
         public void OnObjectEnterAOI(NetworkRunner runnerInstance, NetworkObject obj, PlayerRef player) { }
         public void OnObjectExitAOI(NetworkRunner runnerInstance, NetworkObject obj, PlayerRef player) { }

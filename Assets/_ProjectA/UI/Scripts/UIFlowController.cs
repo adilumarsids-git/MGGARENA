@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProjectA.Networking;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -51,6 +52,18 @@ namespace ProjectA.UI
                     SceneManager.LoadScene(sceneName);
                 }
             }
+        }
+
+        public void StartSharedMatch()
+        {
+            SetState(AppState.Queue, false);
+            FusionBootstrap.StartSelectedModeFromUI();
+        }
+
+        public void LeaveSharedMatchToLobby()
+        {
+            FusionBootstrap.Instance?.LeaveSessionAndReturnToLobby();
+            SetState(AppState.Lobby, false);
         }
 
         public void ShowErrorModal(bool isVisible)

@@ -128,6 +128,8 @@ Current prefabs are skeleton containers intended for your manual UI composition.
 - `SetState(AppState.Queue)`
 - `SetState(AppState.Match)`
 - `SetState(AppState.Results)`
+- `StartSharedMatch()` (recommended for Lobby Start button; will queue UI and invoke Fusion bootstrap)
+- `LeaveSharedMatchToLobby()`
 - `ShowErrorModal(true/false)`
 
 No Photon/Fusion integration is included yet.
