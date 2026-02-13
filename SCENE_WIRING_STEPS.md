@@ -1,5 +1,15 @@
 # Project A Scene Wiring Steps (Manual)
 
+## Quick Start (recommended)
+1. In Unity menu click **ProjectA -> Build Complete Test Setup**.
+2. This auto-creates:
+   - `Assets/Scenes/Boot.unity`, `Lobby.unity`, `Game.unity`
+   - `Assets/_ProjectA/Prefabs/NetworkPlayer_Character1..5.prefab`
+   - `Assets/_ProjectA/Prefabs/ProjectA_NetworkRunner.prefab`
+   - Game HUD single-canvas joysticks wired to `FusionInputProvider_MOST`
+   - Build Settings scenes order: Boot -> Lobby -> Game
+3. Open Boot scene and press Play for a full loop test.
+
 ## 0) One-time prefab generation
 1. Open Unity editor.
 2. Run menu: **ProjectA -> Generate Network Player Prefabs**.

@@ -13,8 +13,8 @@ namespace ProjectA
     public class NetworkGameManager : NetworkBehaviour, INetworkRunnerCallbacks
     {
         [Header("Prefabs")]
-        [SerializeField] private NetworkPrefabRef[] characterPrefabs;
-        [SerializeField] private NetworkPrefabRef botPrefab;
+        [SerializeField] private NetworkObject[] characterPrefabs;
+        [SerializeField] private NetworkObject botPrefab;
         [SerializeField] private Transform[] spawnPoints;
 
         [Header("Rules")]
@@ -77,6 +77,7 @@ namespace ProjectA
         {
             var point = spawnPoints.Length > 0 ? spawnPoints[_playerObjects.Count % spawnPoints.Length] : transform;
             var prefab = isBot ? botPrefab : characterPrefabs[player.PlayerId % characterPrefabs.Length];
+            if (!prefab) return;
             var obj = Runner.Spawn(prefab, point.position, Quaternion.identity, isBot ? PlayerRef.None : player);
             var controller = obj.GetComponent<NetworkPlayer_MOST>();
             if (controller)
@@ -89,6 +90,7 @@ namespace ProjectA
 
         private void SpawnBotAt(Vector3 position, string nickname)
         {
+            if (!botPrefab) return;
             var obj = Runner.Spawn(botPrefab, position, Quaternion.identity, PlayerRef.None);
             var controller = obj.GetComponent<NetworkPlayer_MOST>();
             if (controller) controller.IsBot = true;
