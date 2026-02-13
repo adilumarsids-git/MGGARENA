@@ -123,3 +123,28 @@ If you want, next step can be a full dedicated set of wrappers:
 - `NetworkMOST_HealthBarSync`
 
 These wrappers would keep MOST authoring workflow while routing state-changing logic through Fusion authority/RPC.
+
+
+## 11) Implemented network-native MOST wrapper components
+
+These wrappers are now implemented under `Assets/_ProjectA/Networking/Scripts/`:
+
+- `NetworkMOST_ActionAuthority`
+  - Enables/Disables MOST runtime components by authority.
+  - Keeps `MOST_Controller`/`MOST_Action` local-only.
+  - Keeps `Camera`/`AudioListener` local-only.
+  - Disables built-in MOST gameplay drivers (`MOST_FreeMovement`, `MOST_GridMovement`, `MOST_Aim`, `MOST_ProjectileGenerator`, `MOST_Damage`) so they cannot fight Fusion simulation.
+
+- `NetworkMOST_HealthBarSync`
+  - Synchronizes networked health values to `HealthBar` safely.
+
+- `NetworkMOST_Aim`
+  - Resolves aim direction from MOST shoot/throw joysticks in a network-safe read-only way.
+
+- `NetworkMOST_ProjectileGenerator`
+  - Spawns `NetworkProjectile` through Fusion authority path using a consistent wrapper entry point.
+
+- `NetworkMOST_Damage`
+  - Utility bridge for routing damage application through networked character authority logic.
+
+`NetworkCharacter` now auto-wires these wrappers at runtime and uses them as primary hooks.

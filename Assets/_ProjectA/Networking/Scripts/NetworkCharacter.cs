@@ -43,6 +43,12 @@ namespace ProjectA.Networking
         [SerializeField] private MOST_Controller shootJoystick;
         [SerializeField] private MOST_Controller throwJoystick;
 
+        [Header("Network MOST Wrappers")]
+        [SerializeField] private NetworkMOST_ActionAuthority actionAuthority;
+        [SerializeField] private NetworkMOST_HealthBarSync healthBarSync;
+        [SerializeField] private NetworkMOST_Aim networkAim;
+        [SerializeField] private NetworkMOST_ProjectileGenerator projectileGenerator;
+
         public int PlayerRaw => Object.InputAuthority.RawEncoded;
 
         public override void Spawned()
@@ -56,7 +62,6 @@ namespace ProjectA.Networking
             }
 
             AutoWireReferences();
-            DisableBuiltInMostMovement();
             ConfigureLocalOnlyUI(Object.HasInputAuthority);
             SyncHealthBarImmediate();
 
@@ -189,8 +194,14 @@ namespace ProjectA.Networking
         {
             if (projectilePrefab == null) return;
 
-            var origin = projectileSpawnPoint != null ? projectileSpawnPoint.position : transform.position + Vector3.up;
             var aim = ResolveAimDirection(movementDirection);
+            if (projectileGenerator != null)
+            {
+                projectileGenerator.Spawn(this, projectilePrefab, projectileSpawnPoint, damage, speed, aim);
+                return;
+            }
+
+            var origin = projectileSpawnPoint != null ? projectileSpawnPoint.position : transform.position + Vector3.up;
             var projectileObject = Runner.Spawn(projectilePrefab, origin, Quaternion.LookRotation(aim), Object.InputAuthority);
             projectileObject.GetComponent<NetworkProjectile>()?.Initialize(this, aim, speed, damage);
         }
@@ -213,16 +224,9 @@ namespace ProjectA.Networking
 
         private Vector3 ResolveAimDirection(Vector3 movementDirection)
         {
-            if (throwJoystick != null)
+            if (networkAim != null)
             {
-                var axis = throwJoystick.GetAxis();
-                if (axis.sqrMagnitude > 0.04f) return new Vector3(axis.x, 0f, axis.y).normalized;
-            }
-
-            if (shootJoystick != null)
-            {
-                var axis = shootJoystick.GetAxis();
-                if (axis.sqrMagnitude > 0.04f) return new Vector3(axis.x, 0f, axis.y).normalized;
+                return networkAim.ResolveAimDirection(movementDirection, transform);
             }
 
             if (movementDirection.sqrMagnitude > 0.04f) return movementDirection.normalized;
@@ -247,25 +251,23 @@ namespace ProjectA.Networking
                 }
             }
 
+            if (actionAuthority == null) actionAuthority = GetComponent<NetworkMOST_ActionAuthority>() ?? gameObject.AddComponent<NetworkMOST_ActionAuthority>();
+            if (healthBarSync == null) healthBarSync = GetComponent<NetworkMOST_HealthBarSync>() ?? gameObject.AddComponent<NetworkMOST_HealthBarSync>();
+            if (networkAim == null) networkAim = GetComponentInChildren<NetworkMOST_Aim>(true) ?? gameObject.AddComponent<NetworkMOST_Aim>();
+            if (projectileGenerator == null) projectileGenerator = GetComponent<NetworkMOST_ProjectileGenerator>() ?? gameObject.AddComponent<NetworkMOST_ProjectileGenerator>();
+
             if (projectileSpawnPoint == null) projectileSpawnPoint = transform;
         }
 
 
-        private void DisableBuiltInMostMovement()
-        {
-            foreach (var freeMovement in GetComponentsInChildren<MOST_FreeMovement>(true))
-            {
-                freeMovement.enabled = false;
-            }
-
-            foreach (var gridMovement in GetComponentsInChildren<MOST_GridMovement>(true))
-            {
-                gridMovement.enabled = false;
-            }
-        }
-
         private void SyncHealthBarImmediate()
         {
+            if (healthBarSync != null)
+            {
+                healthBarSync.Sync(Health, maxHealth);
+                return;
+            }
+
             if (healthBar == null) return;
             if (healthBar.MaxHealth <= 0f) healthBar.ResetMaxHealth(maxHealth);
             if (Mathf.Abs(healthBar.Health - Health) > 0.01f) healthBar.UpdateHealth(Health);
@@ -273,6 +275,12 @@ namespace ProjectA.Networking
 
         private void ConfigureLocalOnlyUI(bool isLocal)
         {
+            if (actionAuthority != null)
+            {
+                actionAuthority.Apply(gameObject, isLocal);
+                return;
+            }
+
             foreach (var controller in GetComponentsInChildren<MOST_Controller>(true))
             {
                 controller.enabled = isLocal;
