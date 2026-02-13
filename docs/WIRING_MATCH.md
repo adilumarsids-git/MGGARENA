@@ -105,4 +105,5 @@ Example render logic per row:
 
 ## Local camera note
 - `NetworkedCharacter.prefab` includes a child camera object `LocalPlayerCamera` by default.
-- Reparent/retarget this camera under `CharacterModel/MOST_Action` as needed for your setup.
+- `LocalPlayerCamera` is intentionally **Untagged** (not `MainCamera`) to avoid automatic `Camera.main` control by unrelated systems.
+- Reparent/retarget and tag/assign this camera under `CharacterModel/MOST_Action` manually as needed for your setup.
