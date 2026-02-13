@@ -73,3 +73,9 @@
 5. Verify bot is spawned to replace leaver slot.
 6. End timer and verify host sends `/client/game/result` once.
 7. Replay same room_sequence result submission to validate duplicate-safe response from backend.
+
+## If you do not see any character spawn
+1. In **Game** scene, click the **Start Session** button (this is required).
+2. Ensure `NetworkingRoot` has `FusionSessionLauncher` with a valid `runnerPrefab`.
+3. Ensure `NetworkGameManager.characterPrefabs` has at least 1 network character prefab assigned.
+4. Check Console for `Failed to start Fusion shared session` logs.
