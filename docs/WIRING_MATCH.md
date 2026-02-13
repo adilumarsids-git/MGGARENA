@@ -104,5 +104,5 @@ Example render logic per row:
 
 
 ## Local camera note
-- `NetworkCharacter` now auto-creates a local camera for the input-authority player if no `Camera.main` exists.
-- This avoids the `No cameras rendering` screen in Match scene.
+- `NetworkedCharacter.prefab` includes a child camera object `LocalPlayerCamera` by default.
+- Reparent/retarget this camera under `CharacterModel/MOST_Action` as needed for your setup.

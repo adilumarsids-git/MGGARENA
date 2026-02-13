@@ -43,11 +43,6 @@ namespace ProjectA.Networking
         [SerializeField] private MOST_Controller shootJoystick;
         [SerializeField] private MOST_Controller throwJoystick;
 
-        [Header("Local Camera")]
-        [SerializeField] private bool createLocalCamera = true;
-        [SerializeField] private Vector3 cameraOffset = new(0f, 10f, -8f);
-        [SerializeField] private Vector3 cameraEuler = new(35f, 0f, 0f);
-
         public int PlayerRaw => Object.InputAuthority.RawEncoded;
 
         public override void Spawned()
@@ -62,7 +57,6 @@ namespace ProjectA.Networking
 
             AutoWireReferences();
             ConfigureLocalOnlyUI(Object.HasInputAuthority);
-            EnsureLocalCameraIfNeeded();
             SyncHealthBarImmediate();
 
             if (Object.HasInputAuthority)
@@ -235,26 +229,6 @@ namespace ProjectA.Networking
             }
 
             if (projectileSpawnPoint == null) projectileSpawnPoint = transform;
-        }
-
-        private void EnsureLocalCameraIfNeeded()
-        {
-            if (!createLocalCamera || !Object.HasInputAuthority)
-            {
-                return;
-            }
-
-            if (Camera.main != null)
-            {
-                return;
-            }
-
-            var cameraGo = new GameObject("LocalPlayerCamera");
-            cameraGo.transform.SetParent(transform, false);
-            cameraGo.transform.localPosition = cameraOffset;
-            cameraGo.transform.localRotation = Quaternion.Euler(cameraEuler);
-            cameraGo.AddComponent<Camera>();
-            cameraGo.AddComponent<AudioListener>();
         }
 
         private void SyncHealthBarImmediate()
