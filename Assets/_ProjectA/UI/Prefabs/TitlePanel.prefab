@@ -40,6 +40,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1682358708851916379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afcb2e3d483c4e998c2afdeda2c596c7, type: 3}
+  m_Script: {fileID: 11500000, guid: ae4cfc3cedea493d8bf40c38a2e78e5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectA.UI.TitlePanel

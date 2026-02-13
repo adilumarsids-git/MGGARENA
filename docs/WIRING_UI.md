@@ -24,7 +24,13 @@ This document explains exactly how to wire the scene/UI skeleton produced for Pr
 ### Scripts
 - `Assets/_ProjectA/UI/Scripts/AppState.cs`
 - `Assets/_ProjectA/UI/Scripts/ProjectAPanel.cs`
-- `Assets/_ProjectA/UI/Scripts/PanelScripts.cs`
+- `Assets/_ProjectA/UI/Scripts/BootPanel.cs`
+- `Assets/_ProjectA/UI/Scripts/TitlePanel.cs`
+- `Assets/_ProjectA/UI/Scripts/LobbyPanel.cs`
+- `Assets/_ProjectA/UI/Scripts/QueuePanel.cs`
+- `Assets/_ProjectA/UI/Scripts/HUDPanel.cs`
+- `Assets/_ProjectA/UI/Scripts/ResultsPanel.cs`
+- `Assets/_ProjectA/UI/Scripts/ErrorModal.cs`
 - `Assets/_ProjectA/UI/Scripts/UIRoot.cs`
 - `Assets/_ProjectA/UI/Scripts/UIFlowController.cs`
 

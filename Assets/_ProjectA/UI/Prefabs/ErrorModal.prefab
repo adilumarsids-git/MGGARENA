@@ -40,6 +40,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1412383137294892298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afcb2e3d483c4e998c2afdeda2c596c7, type: 3}
+  m_Script: {fileID: 11500000, guid: bd538141b3774bee8b35b25ea5eb7a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectA.UI.ErrorModal

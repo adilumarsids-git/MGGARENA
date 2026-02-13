@@ -40,6 +40,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1098719688477620632}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afcb2e3d483c4e998c2afdeda2c596c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 58525e63489b49e3bea5fdc3780d8978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectA.UI.QueuePanel
