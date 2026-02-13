@@ -13,9 +13,19 @@ namespace ProjectA.Networking
             if (localCharacter != null)
             {
                 data.Move = localCharacter.ReadMoveInput();
-                if (localCharacter.ReadActionPressed())
+                if (localCharacter.ReadBasicPressed())
                 {
-                    data.Buttons.Set(NetworkPlayerInputData.Action, true);
+                    data.Buttons.Set(NetworkPlayerInputData.Basic, true);
+                }
+
+                if (localCharacter.ReadActivePressed())
+                {
+                    data.Buttons.Set(NetworkPlayerInputData.Active, true);
+                }
+
+                if (localCharacter.ReadUltimatePressed())
+                {
+                    data.Buttons.Set(NetworkPlayerInputData.Ultimate, true);
                 }
 
                 if (localCharacter.ReadJumpPressed())
@@ -34,7 +44,9 @@ namespace ProjectA.Networking
             if (move.sqrMagnitude > 1f) move.Normalize();
 
             data.Move = move;
-            if (Input.GetMouseButton(0)) data.Buttons.Set(NetworkPlayerInputData.Action, true);
+            if (Input.GetMouseButton(0)) data.Buttons.Set(NetworkPlayerInputData.Basic, true);
+            if (Input.GetKey(KeyCode.Q)) data.Buttons.Set(NetworkPlayerInputData.Active, true);
+            if (Input.GetKey(KeyCode.E)) data.Buttons.Set(NetworkPlayerInputData.Ultimate, true);
             if (Input.GetKey(KeyCode.Space)) data.Buttons.Set(NetworkPlayerInputData.Jump, true);
             return data;
         }

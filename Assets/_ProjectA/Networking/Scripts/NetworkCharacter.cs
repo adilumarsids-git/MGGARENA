@@ -5,6 +5,7 @@ using UnityEngine;
 namespace ProjectA.Networking
 {
     [RequireComponent(typeof(NetworkObject))]
+    [RequireComponent(typeof(AbilitySystem))]
     public class NetworkCharacter : NetworkBehaviour
     {
         public static NetworkCharacter LocalCharacter { get; private set; }
@@ -16,16 +17,20 @@ namespace ProjectA.Networking
         [SerializeField] private int maxHealth = 100;
         [Networked] public int Health { get; private set; }
 
+        [Header("Projectiles")]
+        [SerializeField] private NetworkObject projectilePrefab;
+        [SerializeField] private Transform projectileSpawnPoint;
+
         [Header("MOST Input Sources")]
         [SerializeField] private MOST_Controller moveJoystick;
         [SerializeField] private MOST_Controller shootJoystick;
 
-        [Header("Damage Test")]
-        [SerializeField] private int actionDamage = 10;
-        [SerializeField] private float actionRange = 2f;
+        public AbilitySystem Ability { get; private set; }
 
         public override void Spawned()
         {
+            Ability = GetComponent<AbilitySystem>();
+
             if (Object.HasStateAuthority)
             {
                 Health = maxHealth;
@@ -63,9 +68,19 @@ namespace ProjectA.Networking
             var direction = new Vector3(input.Move.x, 0f, input.Move.y);
             transform.position += direction * moveSpeed * Runner.DeltaTime;
 
-            if (input.Buttons.IsSet(NetworkPlayerInputData.Action))
+            if (input.Buttons.IsSet(NetworkPlayerInputData.Basic))
             {
-                TryDealDamage();
+                TryFireAbility(AbilityType.Basic, direction);
+            }
+
+            if (input.Buttons.IsSet(NetworkPlayerInputData.Active))
+            {
+                TryFireAbility(AbilityType.Active, direction);
+            }
+
+            if (input.Buttons.IsSet(NetworkPlayerInputData.Ultimate))
+            {
+                TryFireAbility(AbilityType.Ultimate, direction);
             }
         }
 
@@ -79,7 +94,7 @@ namespace ProjectA.Networking
             return Vector2.zero;
         }
 
-        public bool ReadActionPressed()
+        public bool ReadBasicPressed()
         {
             if (shootJoystick != null)
             {
@@ -87,6 +102,16 @@ namespace ProjectA.Networking
             }
 
             return Input.GetMouseButton(0);
+        }
+
+        public bool ReadActivePressed()
+        {
+            return Input.GetKey(KeyCode.Q);
+        }
+
+        public bool ReadUltimatePressed()
+        {
+            return Input.GetKey(KeyCode.E);
         }
 
         public bool ReadJumpPressed()
@@ -111,20 +136,42 @@ namespace ProjectA.Networking
             Health = Mathf.Max(0, Health - Mathf.Abs(damage));
         }
 
-        private void TryDealDamage()
+        private void TryFireAbility(AbilityType abilityType, Vector3 movementDirection)
         {
-            var hits = Physics.OverlapSphere(transform.position, actionRange);
-            foreach (var hit in hits)
+            if (Ability == null || projectilePrefab == null)
             {
-                var target = hit.GetComponentInParent<NetworkCharacter>();
-                if (target == null || target == this)
-                {
-                    continue;
-                }
-
-                target.ApplyDamage(actionDamage);
-                break;
+                return;
             }
+
+            if (!Ability.TryConsume(abilityType, out var definition))
+            {
+                return;
+            }
+
+            var origin = projectileSpawnPoint != null ? projectileSpawnPoint.position : transform.position + Vector3.up;
+            var aim = ResolveAimDirection(movementDirection);
+            var projectileObject = Runner.Spawn(projectilePrefab, origin, Quaternion.LookRotation(aim), Object.InputAuthority);
+            var projectile = projectileObject.GetComponent<NetworkProjectile>();
+            projectile?.Initialize(this, aim, definition.projectileSpeed, definition.damage);
+        }
+
+        private Vector3 ResolveAimDirection(Vector3 movementDirection)
+        {
+            if (shootJoystick != null)
+            {
+                var shootAxis = shootJoystick.GetAxis();
+                if (shootAxis.sqrMagnitude > 0.04f)
+                {
+                    return new Vector3(shootAxis.x, 0f, shootAxis.y).normalized;
+                }
+            }
+
+            if (movementDirection.sqrMagnitude > 0.04f)
+            {
+                return movementDirection.normalized;
+            }
+
+            return transform.forward.sqrMagnitude > 0.1f ? transform.forward : Vector3.forward;
         }
 
         private void AutoWireControllers()
@@ -141,11 +188,16 @@ namespace ProjectA.Networking
                         continue;
                     }
 
-                    if (shootJoystick == null && (lower.Contains("shoot") || lower.Contains("aim")))
+                    if (shootJoystick == null && (lower.Contains("shoot") || lower.Contains("aim") || lower.Contains("throw")))
                     {
                         shootJoystick = controller;
                     }
                 }
+            }
+
+            if (projectileSpawnPoint == null)
+            {
+                projectileSpawnPoint = transform;
             }
         }
 

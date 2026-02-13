@@ -157,7 +157,7 @@ namespace ProjectA.Networking
 
         public void OnPlayerJoined(NetworkRunner runnerInstance, PlayerRef player)
         {
-            if (!runnerInstance.IsSharedModeMasterClient || networkPlayerPrefab == null)
+            if (networkPlayerPrefab == null || player != runnerInstance.LocalPlayer || _spawned.ContainsKey(player))
             {
                 return;
             }
@@ -177,7 +177,7 @@ namespace ProjectA.Networking
 
         public void OnPlayerLeft(NetworkRunner runnerInstance, PlayerRef player)
         {
-            if (_spawned.TryGetValue(player, out var networkObject) && networkObject != null)
+            if (_spawned.TryGetValue(player, out var networkObject) && networkObject != null && networkObject.HasStateAuthority)
             {
                 runnerInstance.Despawn(networkObject);
             }
@@ -213,6 +213,9 @@ namespace ProjectA.Networking
         public void OnObjectExitAOI(NetworkRunner runnerInstance, NetworkObject obj, PlayerRef player) { }
         public void OnReliableDataReceived(NetworkRunner runnerInstance, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
         public void OnReliableDataProgress(NetworkRunner runnerInstance, PlayerRef player, ReliableKey key, float progress) { }
-        public void OnShutdown(NetworkRunner runnerInstance, ShutdownReason shutdownReason) { }
+        public void OnShutdown(NetworkRunner runnerInstance, ShutdownReason shutdownReason)
+        {
+            _spawned.Clear();
+        }
     }
 }

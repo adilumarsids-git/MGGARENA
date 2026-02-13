@@ -28,7 +28,7 @@ namespace ProjectA.Networking
 
             if (Input.GetMouseButton(0))
             {
-                data.Buttons.Set(NetworkPlayerInputData.Action, true);
+                data.Buttons.Set(NetworkPlayerInputData.Basic, true);
             }
 
             return data;
