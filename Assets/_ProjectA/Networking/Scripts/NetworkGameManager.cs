@@ -60,7 +60,7 @@ namespace ProjectA.Networking
             configuredMode = mode;
             matchDurationSeconds = durationSeconds;
 
-            if (!IsSpawned || Object == null || !Object.HasStateAuthority)
+            if (Runner == null || Object == null || !Object.HasStateAuthority)
             {
                 return;
             }
