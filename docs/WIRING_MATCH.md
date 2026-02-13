@@ -104,5 +104,6 @@ Example render logic per row:
 
 
 ## Local camera note
+- Built-in MOST `Camera Follow` actions on `Assets/_MyCharacters/Character*.prefab` are disabled so they do not move `Camera.main` automatically.
 - `NetworkedCharacter.prefab` includes a child camera object `LocalPlayerCamera` by default.
 - Reparent/retarget this camera under `CharacterModel/MOST_Action` as needed for your setup.
