@@ -56,6 +56,7 @@ namespace ProjectA.Networking
             }
 
             AutoWireReferences();
+            DisableBuiltInMostMovement();
             ConfigureLocalOnlyUI(Object.HasInputAuthority);
             SyncHealthBarImmediate();
 
@@ -247,6 +248,20 @@ namespace ProjectA.Networking
             }
 
             if (projectileSpawnPoint == null) projectileSpawnPoint = transform;
+        }
+
+
+        private void DisableBuiltInMostMovement()
+        {
+            foreach (var freeMovement in GetComponentsInChildren<MOST_FreeMovement>(true))
+            {
+                freeMovement.enabled = false;
+            }
+
+            foreach (var gridMovement in GetComponentsInChildren<MOST_GridMovement>(true))
+            {
+                gridMovement.enabled = false;
+            }
         }
 
         private void SyncHealthBarImmediate()

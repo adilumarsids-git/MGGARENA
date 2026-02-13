@@ -104,6 +104,7 @@ Example render logic per row:
 
 
 ## Local camera note
+- `NetworkCharacter` disables built-in MOST movement components (`MOST_FreeMovement` / `MOST_GridMovement`) so movement is driven only by network simulation.
 - `NetworkCharacter` enables child `Camera`/`AudioListener` only on the input-authority player, so each client keeps its own player camera active.
 - Runtime spawns a single `NetworkGameManager`; duplicate spawns are now guarded in `FusionBootstrap`/`NetworkGameManager`.
 - `NetworkCharacter` now enables `MOST_Action` components only for input-authority player instances to prevent remote clones from driving camera actions.
