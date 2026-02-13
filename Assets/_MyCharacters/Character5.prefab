@@ -1110,10 +1110,10 @@ MonoBehaviour:
     - rid: 4303637549086408704
       type: {class: MOSTAction_CameraFollow, ns: Solo.MOST_IN_ONE, asm: Assembly-CSharp}
       data:
-        Enabled: 0
+        Enabled: 1
         Owner: {fileID: 7005034458226828865}
         ActionName: Camera Follow
-        PlayOnAwake: 0
+        PlayOnAwake: 1
         SubActions: []
         TargetObject: {fileID: 0}
         Camera: {fileID: 0}
